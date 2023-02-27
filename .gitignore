@@ -1,5 +1,5 @@
 .vscode/
 target/
 Cargo.lock
-src/macros.rs
-src/cache.rs
+**/macros.rs
+**/cache.rs
