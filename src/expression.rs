@@ -13,8 +13,8 @@ impl <T: Iterator<Item=char>> Lexer<T>  {
 
 impl <T: Iterator<Item=char>> Iterator for Lexer<T> {
     type Item = Token;
-
     fn next(&mut self) -> Option<Self::Item> {
+
         while let Some(_) = self.chars.next_if(|x| x.is_whitespace()) {}
 
         if let Some(token) = self.chars.next() {
@@ -49,8 +49,6 @@ impl <T: Iterator<Item=char>> Iterator for Lexer<T> {
             None
         }
     }
-
-
 }
 
 
@@ -111,16 +109,32 @@ impl Exp {
                     if lexer.peek().unwrap().kind == Tokenkind::Identifier || lexer.peek().unwrap().kind == Tokenkind::Int {
                         symbols.push(Exp::Op(token.text));
                     } else {
-                        continue;
+                        panic!("Sign should only be followed by int or identifier!");
                     }
                 },
 
                 Tokenkind::Cap => {
-                    if let Some(char) = lexer.next_if(|x| x.kind == Tokenkind::Int) {
-                        symbols.push(Exp::Cap(token.text));
-                        symbols.push(Exp::Exponent(char.text));
-                    } else {
-                        continue;
+                    match symbols.last() {
+                        Some(val) => {
+                            match val {
+                                Exp::Var(_) | Exp::Int(_)=>  {
+                                    if let Some(char) = lexer.next_if(|x| x.kind == Tokenkind::Int) {
+                                        symbols.push(Exp::Cap(token.text));
+                                        symbols.push(Exp::Exponent(char.text));
+                                    } else if let Some(sign) = lexer.next_if(|c| c.kind == Tokenkind::Sign) {
+                                        if (sign.text == "+") | (sign.text == "-") {
+                                            symbols.push(Exp::Cap(token.text));
+                                            symbols.push(Exp::Op(sign.text));
+                                        }
+                                    }                               
+                                },
+
+                                _ => {
+                                    panic!("Cap should only be followed by int or identifier!");
+                                }
+                            }
+                        },
+                        None => {panic!("Cap should only be followed by int or identifier!");},
                     }
                 },
 

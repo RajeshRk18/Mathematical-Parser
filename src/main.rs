@@ -1,12 +1,11 @@
 mod expression;
-mod macros;
 mod format;
 
 use expression::*;
 
 fn main() {
 
-    let tokens: Vec<Token> = Lexer::from_str("x=y^2+5".chars()).collect();
+    let tokens: Vec<Token> = Lexer::from_str("x=42y^-2+5".chars()).collect();
 
     println!("{:?}", &tokens);
 

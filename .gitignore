@@ -1,7 +1,3 @@
 .vscode/
 target/
 Cargo.lock
-<<<<<<< HEAD
-
-=======
->>>>>>> b558978 (change readme)
